@@ -12,11 +12,12 @@ final class Company extends Model
 {
     use HasFactory;
 
+    protected $table = 'companies';
+
     protected $fillable = [
         'name',
-        'description',
+        'email',
         'website',
-        'location',
     ];
 
     public function vacancies(): HasMany

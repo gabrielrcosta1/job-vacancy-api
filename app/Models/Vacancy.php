@@ -27,4 +27,14 @@ final class Vacancy extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function casts(): array
+    {
+        return [
+            'requirements' => 'array',
+            'benefits' => 'array',
+            'salary_min' => 'decimal:2',
+            'salary_max' => 'decimal:2',
+        ];
+    }
 }
