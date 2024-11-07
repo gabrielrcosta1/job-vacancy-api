@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\VacancyController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::post('/jobs', [VacancyController::class, 'store']);
+Route::get('/jobs', function () {
+    return response('Hello World', 200)
+        ->header('Content-Type', 'text/plain');
+});
