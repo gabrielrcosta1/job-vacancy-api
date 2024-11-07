@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 final class StoreVacancyRequest extends FormRequest
 {
@@ -23,15 +24,17 @@ final class StoreVacancyRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+       
+        $rules =  [
             'title' => 'required|string',
             'description' => 'required|string',
-            'salary_min' => 'required|numeric',
-            'salary_max' => 'required|numeric',
+            'salary_min' => 'nullable|numeric|min:0',
+            'salary_max' => 'nullable|numeric|gte:salary_min',
             'requirements' => 'required|array',
             'benefits' => 'required|array',
             'company_id' => 'required|exists:companies,id',
         ];
+        return $rules;
     }
 
     public function messages(): array
@@ -43,6 +46,7 @@ final class StoreVacancyRequest extends FormRequest
             'salary_max.required' => 'A faixa salarial máxima é obrigatória.',
             'requirements.required' => 'Os requisitos são obrigatórios.',
             'benefits.required' => 'Os benefícios são obrigatórios.',
+            'salary_max.gte' => 'O salário máximo deve ser maior ou igual ao salário mínimo.',
         ];
     }
 

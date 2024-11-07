@@ -27,7 +27,23 @@ final class Vacancy extends Model
     {
         return $this->belongsTo(Company::class);
     }
+  
 
+    public function scopeFilterByStatus($query, $status): mixed
+    {
+        if ($status) {
+            return $query->where('status', $status);
+        }
+        return $query;
+    }
+
+    public function scopeFilterByCreatedAt($query, $date): mixed
+    {
+        if ($date) {
+            return $query->whereDate('created_at', $date);
+        }
+        return $query;
+    }
     public function casts(): array
     {
         return [
