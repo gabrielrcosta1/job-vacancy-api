@@ -7,6 +7,7 @@ namespace App\Services;
 use App\DTO\VacancyDTO;
 use App\Http\Requests\CandidateRequest;
 use App\Http\Requests\VacancyRequest;
+use App\Models\Application;
 use App\Models\Vacancy;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Pagination\LengthAwarePaginator;

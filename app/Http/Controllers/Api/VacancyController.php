@@ -9,10 +9,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CandidateRequest;
 use App\Http\Requests\StoreUpdateVacancyRequest;
 use App\Http\Requests\VacancyRequest;
+use App\Http\Resources\ApplicationResource;
 use App\Http\Resources\VacancyCollection;
 use App\Http\Resources\VacancyResource;
+use App\Models\Application;
+use App\Models\Vacancy;
 use App\Services\VacancyService;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 final class VacancyController extends Controller
@@ -81,5 +86,34 @@ final class VacancyController extends Controller
 
         return response()->noContent();
 
+    }
+    public function apply(Request $request, string $id)
+    {
+        $candidateId = (int) $request->header('X-User-ID');
+        
+        if (!$candidateId) {
+            return response()->json(['error' => 'X-User-ID header is required'], 400);
+        }
+        $vacancy =$vacancy = Vacancy::where('company_id', $id)->where('status', 'open')->firstOrFail();
+        if ($vacancy->status !== 'open') {
+            throw new HttpResponseException(response()->json([
+                'error' => 'It is not possible to delete the vacancy, as there are associated candidates.',
+            ], 400));
+        }
+
+        $application = Application::where('vacancy_id', $id)
+                                  ->where('candidate_id', $candidateId)
+                                  ->first();
+
+        if ($application) {
+            $application->delete();
+            return $application->setAttribute('status', 'rejected');
+        } else {
+            $application = Application::create([
+                'vacancy_id' => $id,
+                'candidate_id' => $candidateId,
+            ]);
+            return new ApplicationResource($application);
+        }
     }
 }
