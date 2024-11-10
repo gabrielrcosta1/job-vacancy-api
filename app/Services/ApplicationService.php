@@ -21,11 +21,6 @@ final class ApplicationService
             ->with('vacancy')
             ->paginate(10);
     }
-    /**
-     * I left this function very simple,
-     * but there is the possibility of evolving it later
-     * and letting the candidate apply for the vacancy again if they wanted
-     */
 
     public function apply(string $vacancyId, int $candidateId): Application|JsonResponse
     {

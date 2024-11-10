@@ -47,8 +47,9 @@ final class VacancyController extends Controller
     public function update(StoreUpdateVacancyRequest $request, string $id)
     {
         $companyId = (int) $request->header('X-Company-ID');
-        $vacancy = $this->vacancyService->updateVacancy($id, $companyId, $request->validated());
-
+        $vacancyDTO = VacancyDTO::fromRequest($request->validated());
+        $vacancy = $this->vacancyService->updateVacancy($id, $companyId, $vacancyDTO);
+    
         return new VacancyResource($vacancy);
     }
 

@@ -30,4 +30,18 @@ final class VacancyDTO
             $data['company_id']
         );
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'salary_min' => $this->salary_min,
+            'salary_max' => $this->salary_max,
+            'requirements' => $this->requirements,
+            'benefits' => $this->benefits,
+            'status' => $this->status,
+            'company_id' => $this->company_id,
+        ];
+    }
 }

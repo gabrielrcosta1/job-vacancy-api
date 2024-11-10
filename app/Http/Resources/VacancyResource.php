@@ -27,7 +27,6 @@ final class VacancyResource extends JsonResource
             'benefits' => $this->benefits,
             'status' => $this->status,
             'candidates_count' => $this->applications()->count(),
-            'company_id' => $this->company_id,
             'created_at' => Carbon::parse($this->created_at)->format('d/m/Y H:i'),
         ];
     }
