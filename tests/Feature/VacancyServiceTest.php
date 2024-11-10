@@ -12,13 +12,13 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 uses(RefreshDatabase::class);
 
-// Configuração antes de cada teste
+
 beforeEach(function () {
-    // Cria uma empresa para evitar erros de chave estrangeira
+   
     $this->company = Company::factory()->create();
 });
 
-// Teste de criação de vaga com dados válidos
+
 it('creates a vacancy with valid data', function () {
     $vacancyDTO = new VacancyDTO(
         title: 'Developer',
@@ -63,21 +63,21 @@ it('fails to update a vacancy with candidates', function () {
     $vacancyService = app()->make(VacancyService::class);
 
     try {
-        // Tente atualizar a vaga e espere uma exceção
+       
         $vacancyService->updateVacancy($vacancy->id, $this->company->id, $vacancyDTO);
     } catch (HttpResponseException $e) {
-        // Verifique o conteúdo JSON da resposta
+      
         $response = json_decode($e->getResponse()->getContent(), true);
         expect($response['error'])->toBe('It is not possible to modify this vacancy, as there are associated candidates.');
         return;
     }
 
-    // Falha o teste se a exceção não for lançada
+
     $this->fail('HttpResponseException was not thrown as expected.');
 });
 
 
-// Teste de listagem de vagas com filtros
+
 it('lists vacancies with filters', function () {
     Vacancy::factory()->count(5)->create(['status' => VacancyStatus::OPEN, 'company_id' => $this->company->id]);
     Vacancy::factory()->count(3)->create(['status' => VacancyStatus::CLOSED, 'company_id' => $this->company->id]);

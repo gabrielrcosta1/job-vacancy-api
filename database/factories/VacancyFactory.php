@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,7 +27,7 @@ final class VacancyFactory extends Factory
             'requirements' => $this->faker->sentences(3),
             'benefits' => $this->faker->sentences(2),
             'status' => $this->faker->randomElement(['open', 'closed']),
-            'company_id' => null,
+            'company_id' => Company::factory(),
         ];
     }
 }
