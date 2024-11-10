@@ -13,7 +13,6 @@ Desenvolver uma API REST para um sistema de vagas de emprego, onde empresas pode
 O projeto segue uma arquitetura em camadas para melhor organização do código e separação de responsabilidades:
 - **Controllers**: Camada de controle das requisições.
 - **Services**: Responsável pelas regras de negócio.
-- **Repositories** (Opcional): Camada para gerenciar operações de dados.
 - **DTOs**: Utilizado para entrada de dados complexos, com propriedades tipadas.
 - **Resources**: Transformação das respostas da API.
 - **Models**: Representação dos dados do sistema.
@@ -79,19 +78,3 @@ O projeto utiliza Docker para rodar o PostgreSQL. Um arquivo `docker-compose.yml
 4. Configure o arquivo `.env` para apontar para o banco de dados no Docker.
 5. Execute as migrations com `php artisan migrate`.
 6. Inicie o servidor com `php artisan serve`.
-
-## Diferenciais
-- Uso de Docker para simplificar o ambiente.
-- Cache para melhorar a performance de listagens.
-- Filas para processamento de candidaturas assíncronas.
-
-## Critérios de Avaliação
-1. Organização e clareza do código.
-2. Implementação das regras de negócio.
-3. Uso correto dos recursos do Laravel.
-4. Cobertura de testes e tratamento de erros.
-
-## Entrega
-- Código fonte no repositório Git.
-- Este README detalha as instruções de instalação e execução.
-- Prazo final: 11/11/2024.
