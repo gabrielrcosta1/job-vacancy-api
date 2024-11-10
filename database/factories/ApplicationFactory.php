@@ -21,8 +21,8 @@ final class ApplicationFactory extends Factory
     public function definition(): array
     {
         return [
-            'candidate_id' => Candidate::inRandomOrder()->first()->id,
-            'vacancy_id' => Vacancy::inRandomOrder()->first()->id,
+            'candidate_id' => Candidate::factory(),
+            'vacancy_id' => Vacancy::factory(),
             'status' => $this->faker->randomElement(['pending', 'accepted', 'rejected']),
         ];
     }

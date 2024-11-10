@@ -2,12 +2,13 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
+use App\Traits\FormatsDate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ApplicationCollection extends ResourceCollection
 {
+    use FormatsDate;
     /**
      * Transform the resource collection into an array.
      *
@@ -15,6 +16,9 @@ class ApplicationCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
+        // Assegura que o relacionamento 'vacancy' esteja carregado
+        $this->collection->loadMissing('vacancy');
+
         return [
             'data' => $this->collection->map(function ($application) {
                 return [
@@ -25,7 +29,7 @@ class ApplicationCollection extends ResourceCollection
                         'description' => $application->vacancy->description,
                         'status' => $application->vacancy->status,
                     ],
-                    'applied_at' => Carbon::parse($application->created_at)->format("d/m/Y H:i")
+                    'applied_at' => $this->formatDate($application->created_at),
                 ];
             }),
         ];
