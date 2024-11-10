@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\VacancyStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,6 +25,10 @@ final class Vacancy extends Model
         'benefits',
         'status',
         'company_id',
+    ];
+
+    protected $attributes = [
+        'status' => VacancyStatus::OPEN,
     ];
 
     public function company(): BelongsTo
@@ -85,6 +90,7 @@ final class Vacancy extends Model
             'benefits' => 'array',
             'salary_min' => 'decimal:2',
             'salary_max' => 'decimal:2',
+            'status' => VacancyStatus::class,
         ];
     }
 }

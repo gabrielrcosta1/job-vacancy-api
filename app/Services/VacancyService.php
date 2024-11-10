@@ -7,18 +7,17 @@ namespace App\Services;
 use App\DTO\VacancyDTO;
 use App\Http\Requests\CandidateRequest;
 use App\Http\Requests\VacancyRequest;
-use App\Models\Application;
 use App\Models\Vacancy;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 final class VacancyService
 {
-    public function __construct(protected Vacancy $repository) {}
+    public function __construct(protected Vacancy $vacancy) {}
 
     public function getAvailableVacancies(CandidateRequest $request): LengthAwarePaginator
     {
-        return $this->repository->where('status', 'open')
+        return $this->vacancy->where('status', 'open')
             ->filterBySalaryRange($request->input('salary_min'), $request->input('salary_max'))
             ->filterByKeyword($request->input('keyword'))->paginate(10);
 
@@ -26,7 +25,7 @@ final class VacancyService
 
     public function getCompanyVacancies(VacancyRequest $vacancyRequest, int $companyId): LengthAwarePaginator
     {
-        return $this->repository->where('company_id', $companyId)
+        return $this->vacancy->where('company_id', $companyId)
             ->filterByStatus($vacancyRequest->status)
             ->filterByCreatedAt($vacancyRequest->created_at)
             ->paginate(10);
@@ -34,7 +33,7 @@ final class VacancyService
 
     public function createVacancy(VacancyDTO $vacancyDTO): Vacancy
     {
-        return $this->repository->create([
+        return $this->vacancy->create([
             'title' => $vacancyDTO->title,
             'description' => $vacancyDTO->description,
             'salary_min' => $vacancyDTO->salary_min,
@@ -48,7 +47,7 @@ final class VacancyService
 
     public function deleteVacancy(string $vacancyId, int $companyId)
     {
-        $vacancy = $this->repository->where('id', $vacancyId)
+        $vacancy = $this->vacancy->where('id', $vacancyId)
             ->where('company_id', $companyId)
             ->first();
         if (! $vacancy) {
@@ -66,7 +65,7 @@ final class VacancyService
 
     public function updateVacancy(string $vacancyId, int $companyId, array $data): Vacancy
     {
-        $vacancy = $this->repository->where('id', $vacancyId)
+        $vacancy = $this->vacancy->where('id', $vacancyId)
             ->where('company_id', $companyId)
             ->first();
         if (! $vacancy) {

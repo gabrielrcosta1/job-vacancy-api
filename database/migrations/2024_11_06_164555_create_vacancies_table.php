@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('salary_max', 8, 2)->nullable();
             $table->json('requirements')->nullable();
             $table->json('benefits')->nullable();
-            $table->enum('status', ['open', 'closed'])->default('open');
+            $table->enum('status', ['open', 'closed'])->default('open')->index();
             $table->softDeletes();
             $table->timestamps();
             $table->foreignId('company_id')->constrained()->on('companies')->cascadeOnDelete();

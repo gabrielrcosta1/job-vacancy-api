@@ -12,19 +12,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 final class Application extends Model
 {
     use HasFactory;
-   
+
     protected $fillable = [
         'candidate_id', 'vacancy_id', 'status',
     ];
+
     protected $attributes = [
         'status' => ApplicationStatus::PENDING,
     ];
 
-    public function casts(): array{
+    public function casts(): array
+    {
         return [
-            'status' => ApplicationStatus::class
+            'status' => ApplicationStatus::class,
         ];
     }
+
     public function candidate(): BelongsTo
     {
         return $this->belongsTo(Candidate::class);
