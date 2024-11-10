@@ -11,23 +11,20 @@ use App\Http\Requests\StoreVacancyRequest;
 use App\Http\Requests\VacancyRequest;
 use App\Http\Resources\VacancyCollection;
 use App\Http\Resources\VacancyResource;
-use App\Models\Vacancy;
 use App\Services\VacancyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 final class VacancyController extends Controller
 {
-    public function __construct(private VacancyService $vacancyService, protected Vacancy $repository)
+    public function __construct(private VacancyService $vacancyService)
     {
         $this->vacancyService = $vacancyService;
     }
 
     public function available(CandidateRequest $request): VacancyCollection|JsonResponse
     {
-        if (! $request->header('X-User-ID')) {
-            return response()->json(['error' => 'X-User-ID header is required'], 400);
-        }
 
         $vacancies = $this->vacancyService->getAvailableVacancies($request);
 
@@ -40,9 +37,7 @@ final class VacancyController extends Controller
     public function index(VacancyRequest $request): VacancyCollection|JsonResponse
     {
         $companyId = $request->header('X-Company-ID');
-        if (! $companyId) {
-            return response()->json(['error' => 'X-Company-ID header is required'], 422);
-        }
+
         $vacancies = $this->vacancyService->getCompanyVacancies($request, (int) $companyId);
 
         return new VacancyCollection($vacancies);
@@ -79,11 +74,11 @@ final class VacancyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): Response
     {
-        $vacancy = $this->repository->findOrFail($id);
-        $vacancy->delete();
+        $this->vacancyService->deleteVacancy($id);
 
         return response()->noContent();
+
     }
 }

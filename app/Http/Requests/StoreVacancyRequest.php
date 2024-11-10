@@ -43,8 +43,6 @@ final class StoreVacancyRequest extends FormRequest
     {
 
         throw new HttpResponseException(response()->json([
-            'success' => false,
-
             'message' => 'Validation errors',
 
             'data' => $validator->errors(),
@@ -55,6 +53,11 @@ final class StoreVacancyRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        if (! $this->header('X-Company-ID')) {
+            throw new HttpResponseException(response()->json([
+                'error' => 'X-Company-ID header is required',
+            ], 400));
+        }
         $this->merge([
             'company_id' => (int) $this->header('X-Company-ID'),
         ]);

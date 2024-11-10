@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 final class VacancyRequest extends FormRequest
 {
@@ -27,5 +28,14 @@ final class VacancyRequest extends FormRequest
             'status' => 'nullable|string|in:open,closed',
             'created_at' => 'nullable|date',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if (! $this->header('X-Company-ID')) {
+            throw new HttpResponseException(response()->json([
+                'error' => 'X-Company-ID header is required',
+            ], 400));
+        }
     }
 }

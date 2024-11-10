@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 final class CandidateRequest extends FormRequest
 {
@@ -33,8 +34,11 @@ final class CandidateRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->merge([
-            'user_id' => $this->header('X-User-ID'),
-        ]);
+        if (! $this->header('X-User-ID')) {
+            throw new HttpResponseException(response()->json([
+                'error' => 'X-User-ID header is required',
+            ], 400));
+        }
+        
     }
 }
