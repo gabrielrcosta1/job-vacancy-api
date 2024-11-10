@@ -21,6 +21,7 @@ final class Candidate extends Model
         'phone',
         'resume',
     ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -29,6 +30,7 @@ final class Candidate extends Model
     protected $hidden = [
         'password',
     ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -38,6 +40,7 @@ final class Candidate extends Model
     {
         return $this->hasMany(Application::class);
     }
+
     protected function casts(): array
     {
         return [

@@ -48,10 +48,12 @@ final class Vacancy extends Model
 
         return $query;
     }
+
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
     }
+
     public function casts(): array
     {
         return [
