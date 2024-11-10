@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\DTO\VacancyDTO;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CandidateRequest;
 use App\Http\Requests\StoreVacancyRequest;
 use App\Http\Requests\VacancyRequest;
 use App\Http\Resources\VacancyCollection;
@@ -20,6 +21,17 @@ final class VacancyController extends Controller
     public function __construct(private VacancyService $vacancyService, protected Vacancy $repository)
     {
         $this->vacancyService = $vacancyService;
+    }
+
+    public function available(CandidateRequest $request): VacancyCollection|JsonResponse
+    {
+        if (! $request->header('X-User-ID')) {
+            return response()->json(['error' => 'X-User-ID header is required'], 400);
+        }
+
+        $vacancies = $this->vacancyService->getAvailableVacancies($request);
+
+        return new VacancyCollection($vacancies);
     }
 
     /**

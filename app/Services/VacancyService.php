@@ -5,12 +5,21 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\VacancyDTO;
+use App\Http\Requests\CandidateRequest;
 use App\Http\Requests\VacancyRequest;
 use App\Models\Vacancy;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 final class VacancyService
 {
+    public function getAvailableVacancies(CandidateRequest $request): LengthAwarePaginator
+    {
+        return Vacancy::where('status', 'open')
+            ->filterBySalaryRange($request->input('salary_min'), $request->input('salary_max'))
+            ->filterByKeyword($request->input('keyword'))->paginate(10);
+
+    }
+
     public function getCompanyVacancies(VacancyRequest $vacancyRequest, int $companyId): LengthAwarePaginator
     {
         return Vacancy::where('company_id', $companyId)

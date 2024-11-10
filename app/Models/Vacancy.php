@@ -49,6 +49,28 @@ final class Vacancy extends Model
         return $query;
     }
 
+    public function scopeFilterBySalaryRange($query, $salaryMin, $salaryMax): mixed
+    {
+        if (!is_null($salaryMin)) {
+            $query->where('salary_min', '>=', $salaryMin);
+        }
+        if (!is_null($salaryMax)) {
+            $query->where('salary_max', '<=', $salaryMax);
+        }
+        return $query;
+    }
+
+    public function scopeFilterByKeyword($query, $keyword): mixed
+    {
+        if (!is_null($keyword)) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('title', 'like', '%' . $keyword . '%')
+                    ->orWhere('description', 'like', '%' . $keyword . '%');
+            });
+        }
+        return $query;
+    }
+
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
