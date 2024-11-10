@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class Candidate extends Model
@@ -20,7 +21,7 @@ final class Candidate extends Model
         'phone',
         'resume',
     ];
-     /**
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
@@ -33,6 +34,10 @@ final class Candidate extends Model
      *
      * @return array<string, string>
      */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
+    }
     protected function casts(): array
     {
         return [

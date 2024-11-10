@@ -24,8 +24,7 @@ return new class extends Migration
             $table->enum('status', ['open', 'closed'])->default('open');
             $table->softDeletes();
             $table->timestamps();
-
-            $table->foreignId('company_id')->references('id')->on('companies')->cascadeOnDelete();
+            $table->foreignId('company_id')->constrained()->on('companies')->cascadeOnDelete();
         });
     }
 

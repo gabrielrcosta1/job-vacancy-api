@@ -18,6 +18,7 @@ final class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             VacancySeeder::class,
             CandidateSeeder::class,
+            ApplicationSeeder::class
         ]);
     }
 }

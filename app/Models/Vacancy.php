@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class Vacancy extends Model
@@ -47,7 +48,10 @@ final class Vacancy extends Model
 
         return $query;
     }
-
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
+    }
     public function casts(): array
     {
         return [
