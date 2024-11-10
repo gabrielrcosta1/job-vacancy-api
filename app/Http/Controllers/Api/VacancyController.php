@@ -36,9 +36,8 @@ final class VacancyController extends Controller
      */
     public function index(VacancyRequest $request): VacancyCollection|JsonResponse
     {
-        $companyId = $request->header('X-Company-ID');
 
-        $vacancies = $this->vacancyService->getCompanyVacancies($request, (int) $companyId);
+        $vacancies = $this->vacancyService->getCompanyVacancies($request, (int) $request->header('X-Company-ID'));
 
         return new VacancyCollection($vacancies);
     }
@@ -74,9 +73,9 @@ final class VacancyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): Response
+    public function destroy(VacancyRequest $request, string $id): Response
     {
-        $this->vacancyService->deleteVacancy($id);
+        $this->vacancyService->deleteVacancy($id, (int) $request->header('X-Company-ID'));
 
         return response()->noContent();
 

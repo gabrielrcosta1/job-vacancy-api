@@ -37,8 +37,8 @@ final class CandidateRequest extends FormRequest
         if (! $this->header('X-User-ID')) {
             throw new HttpResponseException(response()->json([
                 'error' => 'X-User-ID header is required',
-            ], 400));
+            ], 422));
         }
-        
+
     }
 }

@@ -8,6 +8,7 @@ use App\DTO\VacancyDTO;
 use App\Http\Requests\CandidateRequest;
 use App\Http\Requests\VacancyRequest;
 use App\Models\Vacancy;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 final class VacancyService
@@ -44,11 +45,20 @@ final class VacancyService
         ]);
     }
 
-    public function deleteVacancy($id)
+    public function deleteVacancy(string $id, int $companyId)
     {
-        $vacancy = $this->repository->where('applications')->findOrFail($id);
+        $vacancy = $this->repository->where('id', $id)
+            ->where('company_id', $companyId)
+            ->first();
+        if (! $vacancy) {
+            throw new HttpResponseException(response()->json([
+                'error' => 'You do not have permission to delete this vacancy.',
+            ], 403));
+        }
         if ($vacancy->applications()->exists()) {
-            return response()->json(['error' => 'It is not possible to delete the vacancy, as there are associated candidates.'], 400);
+            throw new HttpResponseException(response()->json([
+                'error' => 'It is not possible to delete the vacancy, as there are associated candidates.',
+            ], 409));
         }
         $vacancy->delete();
     }

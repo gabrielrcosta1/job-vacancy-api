@@ -56,7 +56,7 @@ final class StoreVacancyRequest extends FormRequest
         if (! $this->header('X-Company-ID')) {
             throw new HttpResponseException(response()->json([
                 'error' => 'X-Company-ID header is required',
-            ], 400));
+            ], 422));
         }
         $this->merge([
             'company_id' => (int) $this->header('X-Company-ID'),
