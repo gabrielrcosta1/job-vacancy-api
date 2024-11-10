@@ -7,11 +7,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class Vacancy extends Model
 {
     use HasFactory;
-
+    use SoftDeletes;
     protected $fillable = [
         'title',
         'description',
@@ -27,13 +28,13 @@ final class Vacancy extends Model
     {
         return $this->belongsTo(Company::class);
     }
-  
 
     public function scopeFilterByStatus($query, $status): mixed
     {
         if ($status) {
             return $query->where('status', $status);
         }
+
         return $query;
     }
 
@@ -42,8 +43,10 @@ final class Vacancy extends Model
         if ($date) {
             return $query->whereDate('created_at', $date);
         }
+
         return $query;
     }
+
     public function casts(): array
     {
         return [

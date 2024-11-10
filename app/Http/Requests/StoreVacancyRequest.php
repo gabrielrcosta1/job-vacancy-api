@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 final class StoreVacancyRequest extends FormRequest
 {
@@ -24,8 +25,8 @@ final class StoreVacancyRequest extends FormRequest
      */
     public function rules(): array
     {
-       
-        $rules =  [
+
+        $rules = [
             'title' => 'required|string',
             'description' => 'required|string',
             'salary_min' => 'nullable|numeric|min:0',
@@ -34,20 +35,22 @@ final class StoreVacancyRequest extends FormRequest
             'benefits' => 'required|array',
             'company_id' => 'required|exists:companies,id',
         ];
+
         return $rules;
     }
 
-    public function messages(): array
+    public function failedValidation(Validator $validator): void
     {
-        return [
-            'title.required' => 'O título é obrigatório.',
-            'description.required' => 'A descrição é obrigatória.',
-            'salary_min.required' => 'A faixa salarial mínima é obrigatória.',
-            'salary_max.required' => 'A faixa salarial máxima é obrigatória.',
-            'requirements.required' => 'Os requisitos são obrigatórios.',
-            'benefits.required' => 'Os benefícios são obrigatórios.',
-            'salary_max.gte' => 'O salário máximo deve ser maior ou igual ao salário mínimo.',
-        ];
+
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+
+            'message' => 'Validation errors',
+
+            'data' => $validator->errors(),
+
+        ], 422));
+
     }
 
     protected function prepareForValidation(): void

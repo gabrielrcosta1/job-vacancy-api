@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class VacancyRequest extends FormRequest
+final class VacancyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +24,7 @@ class VacancyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'nullable|string|in:open,closed', 
+            'status' => 'nullable|string|in:open,closed',
             'created_at' => 'nullable|date',
         ];
     }

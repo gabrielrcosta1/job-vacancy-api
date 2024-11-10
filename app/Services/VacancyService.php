@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\VacancyDTO;
+use App\Http\Requests\VacancyRequest;
 use App\Models\Vacancy;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-;
-
 final class VacancyService
 {
-    public function getAllVacancies($vacancyRequest): LengthAwarePaginator
+    public function getCompanyVacancies(VacancyRequest $vacancyRequest, int $companyId): LengthAwarePaginator
     {
-        return Vacancy::filterByStatus($vacancyRequest->status)
-        ->filterByCreatedAt($vacancyRequest->created_at)
-        ->paginate(10);
+        return Vacancy::where('company_id', $companyId)
+            ->filterByStatus($vacancyRequest->status)
+            ->filterByCreatedAt($vacancyRequest->created_at)
+            ->paginate(10);
     }
+
     public function createVacancy(VacancyDTO $vacancyDTO): Vacancy
     {
         return Vacancy::create([

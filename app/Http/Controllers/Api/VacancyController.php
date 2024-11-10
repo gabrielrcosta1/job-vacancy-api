@@ -5,45 +5,72 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\DTO\VacancyDTO;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVacancyRequest;
 use App\Http\Requests\VacancyRequest;
+use App\Http\Resources\VacancyCollection;
 use App\Http\Resources\VacancyResource;
 use App\Models\Vacancy;
 use App\Services\VacancyService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Validator;
 
-final class VacancyController
+final class VacancyController extends Controller
 {
-    public function __construct(private VacancyService $vacancyService,  protected Vacancy $vacancy)
+    public function __construct(private VacancyService $vacancyService, protected Vacancy $repository)
     {
         $this->vacancyService = $vacancyService;
     }
 
-    public function index(VacancyRequest $request): AnonymousResourceCollection
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(VacancyRequest $request): VacancyCollection|JsonResponse
     {
-   
-        $vacancies = $this->vacancyService->getAllVacancies($request);
-        return VacancyResource::collection($vacancies);
+        $companyId = $request->header('X-Company-ID');
+        if (! $companyId) {
+            return response()->json(['error' => 'X-Company-ID header is required'], 422);
+        }
+        $vacancies = $this->vacancyService->getCompanyVacancies($request, (int) $companyId);
+
+        return new VacancyCollection($vacancies);
     }
 
-    public function store(Request $request)
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreVacancyRequest $request): VacancyResource
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'description' => 'required|string',
-            'salary_min' => 'nullable|numeric',
-            'requirements' => 'nullable|array',
-            'benefits' => 'nullable|array',
-            'status' => 'in:open,closed',
-        ]);
-    
-        $data = $validator->validated();
-        $vacancyDTO = VacancyDTO::fromRequest($data);
+        $vacancyDTO = VacancyDTO::fromRequest($request->validated());
+
         $vacancy = $this->vacancyService->createVacancy($vacancyDTO);
-    
+
         return new VacancyResource($vacancy);
     }
-    
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $vacancy = $this->repository->findOrFail($id);
+        $vacancy->delete();
+        return response()->noContent(); 
+    }
 }

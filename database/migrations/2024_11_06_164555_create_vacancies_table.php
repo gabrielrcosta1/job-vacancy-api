@@ -22,6 +22,7 @@ return new class extends Migration
             $table->json('requirements')->nullable();
             $table->json('benefits')->nullable();
             $table->enum('status', ['open', 'closed'])->default('open');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreignId('company_id')->references('id')->on('companies')->cascadeOnDelete();
@@ -33,6 +34,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vacancies');
+        Schema::table('vacancies', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };
