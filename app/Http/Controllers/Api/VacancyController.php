@@ -49,7 +49,7 @@ final class VacancyController extends Controller
         $companyId = (int) $request->header('X-Company-ID');
         $vacancyDTO = VacancyDTO::fromRequest($request->validated());
         $vacancy = $this->vacancyService->updateVacancy($id, $companyId, $vacancyDTO);
-    
+
         return new VacancyResource($vacancy);
     }
 

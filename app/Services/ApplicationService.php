@@ -15,9 +15,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 final class ApplicationService
 {
     public function __construct(protected Application $application, protected Vacancy $vacancy) {}
+
     public function getApplicationsByUser(int $candidateId): LengthAwarePaginator
     {
-        return  $this->application->where('candidate_id', $candidateId)
+        return $this->application->where('candidate_id', $candidateId)
             ->with('vacancy')
             ->paginate(10);
     }
@@ -35,7 +36,6 @@ final class ApplicationService
             return $this->toggleApplicationStatus($existingApplication);
         }
 
-
         return $this->createApplication($vacancyId, $candidateId);
     }
 
@@ -47,7 +47,7 @@ final class ApplicationService
 
         if (! $vacancy) {
             throw new HttpResponseException(response()->json([
-                'error' => 'Vacancy not found'
+                'error' => 'Vacancy not found',
             ], 404));
         }
 

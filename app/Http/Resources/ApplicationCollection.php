@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use App\Traits\FormatsDate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ApplicationCollection extends ResourceCollection
+final class ApplicationCollection extends ResourceCollection
 {
     use FormatsDate;
+
     /**
      * Transform the resource collection into an array.
      *
@@ -16,7 +19,6 @@ class ApplicationCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-
 
         return [
             'data' => $this->collection->map(function ($application) {

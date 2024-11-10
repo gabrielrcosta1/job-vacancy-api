@@ -14,10 +14,9 @@ final class ApplicationController extends Controller
 {
     public function __construct(private ApplicationService $applicationService) {}
 
-   
     public function index(ApplicationRequest $request): ApplicationCollection
     {
-    
+
         $applications = $this->applicationService->getApplicationsByUser((int) $request->header('X-User-ID'));
 
         return new ApplicationCollection($applications);

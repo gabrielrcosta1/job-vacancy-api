@@ -1,8 +1,10 @@
 <?php
+
+declare(strict_types=1);
 use App\Http\Requests\StoreUpdateVacancyRequest;
 use App\Models\Company;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Validator;
 
 uses(RefreshDatabase::class);
 
@@ -26,4 +28,3 @@ it('fails validation when creating a vacancy with invalid data', function () {
     expect($validator->errors()->has('salary_min'))->toBeTrue();
     expect($validator->errors()->has('salary_max'))->toBeTrue();
 });
-

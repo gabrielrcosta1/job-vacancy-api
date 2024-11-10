@@ -1,23 +1,23 @@
 <?php
 
-use App\Models\Company;
-use App\Models\Vacancy;
-use App\Models\Application;
+declare(strict_types=1);
+
 use App\DTO\VacancyDTO;
-use App\Services\VacancyService;
 use App\Enums\VacancyStatus;
 use App\Http\Requests\CandidateRequest;
+use App\Models\Application;
+use App\Models\Company;
+use App\Models\Vacancy;
+use App\Services\VacancyService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 uses(RefreshDatabase::class);
 
-
 beforeEach(function () {
-   
+
     $this->company = Company::factory()->create();
 });
-
 
 it('creates a vacancy with valid data', function () {
     $vacancyDTO = new VacancyDTO(
@@ -40,12 +40,10 @@ it('creates a vacancy with valid data', function () {
         ->and($vacancy->benefits)->toBe(['Health insurance', 'Remote work']);
 });
 
-
-
 it('fails to update a vacancy with candidates', function () {
     $vacancy = Vacancy::factory()->create([
         'company_id' => $this->company->id,
-        'status' => VacancyStatus::OPEN
+        'status' => VacancyStatus::OPEN,
     ]);
     Application::factory()->create(['vacancy_id' => $vacancy->id]);
 
@@ -63,20 +61,18 @@ it('fails to update a vacancy with candidates', function () {
     $vacancyService = app()->make(VacancyService::class);
 
     try {
-       
+
         $vacancyService->updateVacancy($vacancy->id, $this->company->id, $vacancyDTO);
     } catch (HttpResponseException $e) {
-      
+
         $response = json_decode($e->getResponse()->getContent(), true);
         expect($response['error'])->toBe('It is not possible to modify this vacancy, as there are associated candidates.');
+
         return;
     }
 
-
     $this->fail('HttpResponseException was not thrown as expected.');
 });
-
-
 
 it('lists vacancies with filters', function () {
     Vacancy::factory()->count(5)->create(['status' => VacancyStatus::OPEN, 'company_id' => $this->company->id]);

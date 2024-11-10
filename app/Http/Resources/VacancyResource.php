@@ -11,6 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 final class VacancyResource extends JsonResource
 {
     use FormatsDate;
+
     /**
      * Transform the resource into an array.
      *

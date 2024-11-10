@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\Cache;
 final class VacancyService
 {
     public function __construct(protected Vacancy $vacancy) {}
+
     public function getAvailableVacancies(CandidateRequest $request): LengthAwarePaginator
     {
         $cacheKey = $this->generateCacheKey('available_vacancies', $request->all());
-        
+
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($request) {
             return $this->vacancy->where('status', 'open')
                 ->filterBySalaryRange($request->input('salary_min'), $request->input('salary_max'))
@@ -39,11 +40,6 @@ final class VacancyService
         });
     }
 
-    private function generateCacheKey(string $base, array $params): string
-    {
-        return $base . ':' . md5(json_encode($params));
-    }
-
     public function createVacancy(VacancyDTO $vacancyDTO): Vacancy
     {
         return $this->vacancy->create([
@@ -62,7 +58,7 @@ final class VacancyService
     {
         $vacancy = $this->findVacancyByCompany($vacancyId, $companyId);
         $this->ensureVacancyCanBeModified($vacancy);
-        
+
         $vacancy->delete();
     }
 
@@ -71,7 +67,13 @@ final class VacancyService
         $vacancy = $this->findVacancyByCompany($vacancyId, $companyId);
         $this->ensureVacancyCanBeModified($vacancy);
         $vacancy->update($vacancyDTO->toArray());
+
         return $vacancy;
+    }
+
+    private function generateCacheKey(string $base, array $params): string
+    {
+        return $base.':'.md5(json_encode($params));
     }
 
     private function findVacancyByCompany(string $vacancyId, int $companyId): Vacancy
@@ -82,17 +84,18 @@ final class VacancyService
 
         if (! $vacancy) {
             throw new HttpResponseException(response()->json([
-                'error' => 'You do not have permission to modify this vacancy.'
+                'error' => 'You do not have permission to modify this vacancy.',
             ], 403));
         }
 
         return $vacancy;
     }
+
     private function ensureVacancyCanBeModified(Vacancy $vacancy): void
     {
         if ($vacancy->applications()->exists()) {
             throw new HttpResponseException(response()->json([
-                'error' => 'It is not possible to modify this vacancy, as there are associated candidates.'
+                'error' => 'It is not possible to modify this vacancy, as there are associated candidates.',
             ], 409));
         }
     }
