@@ -45,9 +45,9 @@ final class VacancyService
         ]);
     }
 
-    public function deleteVacancy(string $id, int $companyId)
+    public function deleteVacancy(string $vacancyId, int $companyId)
     {
-        $vacancy = $this->repository->where('id', $id)
+        $vacancy = $this->repository->where('id', $vacancyId)
             ->where('company_id', $companyId)
             ->first();
         if (! $vacancy) {
@@ -61,5 +61,25 @@ final class VacancyService
             ], 409));
         }
         $vacancy->delete();
+    }
+
+    public function updateVacancy(string $vacancyId, int $companyId, array $data): Vacancy
+    {
+        $vacancy = $this->repository->where('id', $vacancyId)
+            ->where('company_id', $companyId)
+            ->first();
+        if (! $vacancy) {
+            throw new HttpResponseException(response()->json([
+                'error' => 'You do not have permission to delete this vacancy.',
+            ], 403));
+        }
+        if ($vacancy->applications()->exists()) {
+            throw new HttpResponseException(response()->json([
+                'error' => 'It is not possible to delete the vacancy, as there are associated candidates.',
+            ], 409));
+        }
+        $vacancy->update($data);
+
+        return $vacancy;
     }
 }

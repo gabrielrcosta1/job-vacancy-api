@@ -7,13 +7,12 @@ namespace App\Http\Controllers\Api;
 use App\DTO\VacancyDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CandidateRequest;
-use App\Http\Requests\StoreVacancyRequest;
+use App\Http\Requests\StoreUpdateVacancyRequest;
 use App\Http\Requests\VacancyRequest;
 use App\Http\Resources\VacancyCollection;
 use App\Http\Resources\VacancyResource;
 use App\Services\VacancyService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 final class VacancyController extends Controller
@@ -45,7 +44,7 @@ final class VacancyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreVacancyRequest $request): VacancyResource
+    public function store(StoreUpdateVacancyRequest $request): VacancyResource
     {
         $vacancyDTO = VacancyDTO::fromRequest($request->validated());
 
@@ -65,9 +64,12 @@ final class VacancyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreUpdateVacancyRequest $request, string $id)
     {
-        //
+        $companyId = (int) $request->header('X-Company-ID');
+        $vacancy = $this->vacancyService->updateVacancy($id, $companyId, $request->validated());
+
+        return new VacancyResource($vacancy);
     }
 
     /**
