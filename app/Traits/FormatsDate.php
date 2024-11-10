@@ -7,7 +7,7 @@ use Carbon\Carbon;
 trait FormatsDate
 {
 
-    public function formatDate(string $date): string
+    public function formatDate(Carbon|string $date): string
     {
         return Carbon::parse($date)->format('d/m/Y H:i');
     }

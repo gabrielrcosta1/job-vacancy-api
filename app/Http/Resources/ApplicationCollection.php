@@ -16,8 +16,7 @@ class ApplicationCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        // Assegura que o relacionamento 'vacancy' esteja carregado
-        $this->collection->loadMissing('vacancy');
+
 
         return [
             'data' => $this->collection->map(function ($application) {
