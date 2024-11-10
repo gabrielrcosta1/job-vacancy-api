@@ -20,7 +20,7 @@ final class VacancyCollection extends ResourceCollection
             'data' => $this->collection->transform(function ($job) {
                 return new VacancyResource($job);
             }),
-           
+
         ];
     }
 }

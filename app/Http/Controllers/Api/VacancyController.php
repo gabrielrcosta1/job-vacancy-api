@@ -71,6 +71,7 @@ final class VacancyController extends Controller
     {
         $vacancy = $this->repository->findOrFail($id);
         $vacancy->delete();
-        return response()->noContent(); 
+
+        return response()->noContent();
     }
 }
